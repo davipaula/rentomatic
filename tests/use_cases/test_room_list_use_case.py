@@ -87,5 +87,19 @@ def test_room_list_handles_generic_error():
     assert bool(response_object) is False
     assert response_object.value == {
         "type": res.ResponseFailure.SYSTEM_ERROR,
-        "message": "Exception: Just an error message"
+        "message": "Exception: Just an error message",
+    }
+
+
+def test_room_list_handles_bad_request():
+    repo = mock.Mock()
+    room_list_use_case = uc.RoomListUseCase(repo)
+    request_object = req.RoomListRequestObject.from_dict({"filters": 5})
+
+    response_object = room_list_use_case.execute(request_object)
+
+    assert bool(response_object) is False
+    assert response_object.value == {
+        "type": res.ResponseFailure.PARAMETERS_ERROR,
+        "message": "filters: Is not iterable",
     }

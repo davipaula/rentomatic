@@ -27,12 +27,12 @@ class ValidRequestObject:
 class RoomListRequestObject(ValidRequestObject):
     VALID_KEY_FILTERS = {"code__eq", "price__eq", "price__lt", "price__gt"}
 
-    def __init__(self, filters=None, errors=None):
+    def __init__(self, filters=None):
         self.filters = filters
 
     @classmethod
     def from_dict(cls, dictionary):
-        filters = dictionary["filters"] if "filters" in dictionary else None
+        filters = dictionary["filters"] if "filters" in dictionary else {}
 
         validation_errors = cls.get_validation_errors(filters)
 
