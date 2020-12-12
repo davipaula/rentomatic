@@ -1,36 +1,55 @@
-class PostgresRepo:
-    def __init__(self, data):
-        pass
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-    def list(self):
+from rentomatic.domain import room
+from rentomatic.repository.postgres_objects import Base, Room
+
+
+class PostgresRepo:
+    def __init__(self, connection_data):
+        connection_string = f"postgresql+psycopg2://{connection_data['user']}:{connection_data['password']}@{connection_data['host']}/{connection_data['dbname']}"
+
+        self.engine = create_engine(connection_string)
+        Base.metadata.bind = self.engine
+
+    def _create_room_objects(self, results):
         return [
-            {
-                "code": "f853578c-fc0f-4e65-81b8-566c5dffa35a",
-                "size": 215,
-                "price": 39,
-                "longitude": -0.09998975,
-                "latitude": 51.75436293,
-            },
-            {
-                "code": "fe2c3195-aeff-487a-a08f-e0bdc0ec6e9a",
-                "size": 405,
-                "price": 66,
-                "longitude": 0.18228006,
-                "latitude": 51.74640997,
-            },
-            {
-                "code": "913694c6-435a-4366-ba0d-da5334a611b2",
-                "size": 56,
-                "price": 60,
-                "longitude": 0.27891577,
-                "latitude": 51.45994069,
-            },
-            {
-                "code": "eed76e77-55c1-41ce-985d-ca49bf6c0585",
-                "size": 93,
-                "price": 48,
-                "longitude": 0.33894476,
-                "latitude": 51.39916678,
-            },
+            room.Room(
+                code=result.code,
+                size=result.size,
+                price=result.price,
+                latitude=result.latitude,
+                longitude=result.longitude,
+            )
+            for result in results
         ]
+
+    def list(self, filters=None):
+        DBSession = sessionmaker(bind=self.engine)
+        session = DBSession()
+
+        query = session.query(Room)
+
+        # Not a good implementation because it loads all records in memory.
+        rooms = self._create_room_objects(query.all())
+
+        if filters is None:
+            return rooms
+
+        for filter_, value in filters.items():
+            field, condition = self.get_field_and_condition(filter_)
+
+            rooms = [
+                _room
+                for _room in rooms
+                if _room.__getattribute__(field).__getattribute__(condition)(value)
+            ]
+
+        return rooms
+
+    @staticmethod
+    def get_field_and_condition(filter_):
+        field, condition = filter_.split("__")
+
+        return field, f"__{condition}__"
 

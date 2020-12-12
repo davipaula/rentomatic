@@ -13,7 +13,7 @@ class RoomListUseCase:
         try:
             rooms = self.repo.list(filters=request.filters)
 
-            return res.ResponseSuccess([room.to_dict for room in rooms])
+            return res.ResponseSuccess([room.to_dict() for room in rooms])
         except Exception as err:
             return res.ResponseFailure.build_system_error(err)
 
