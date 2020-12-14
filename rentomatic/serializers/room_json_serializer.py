@@ -1,9 +1,9 @@
 import json
-from typing import Any
+from typing import Any, Dict
 
 
 class RoomJsonEncoder(json.JSONEncoder):
-    def default(self, o: Any) -> Any:
+    def default(self, o: Any) -> Dict:
         try:
             # TODO change to use to_dict function
             to_serialize = {

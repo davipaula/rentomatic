@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
+from typing import Dict
 
 
 class InvalidRequestObject:
@@ -27,11 +30,11 @@ class ValidRequestObject:
 class RoomListRequestObject(ValidRequestObject):
     VALID_KEY_FILTERS = {"code__eq", "price__eq", "price__lt", "price__gt"}
 
-    def __init__(self, filters=None):
+    def __init__(self, filters: Dict = None) -> None:
         self.filters = filters
 
     @classmethod
-    def from_dict(cls, dictionary):
+    def from_dict(cls, dictionary: Dict) -> RoomListRequestObject:
         filters = dictionary["filters"] if "filters" in dictionary else {}
 
         validation_errors = cls.get_validation_errors(filters)
@@ -42,7 +45,7 @@ class RoomListRequestObject(ValidRequestObject):
         return cls(filters)
 
     @classmethod
-    def get_validation_errors(cls, filters) -> InvalidRequestObject:
+    def get_validation_errors(cls, filters: Mapping) -> InvalidRequestObject:
         invalid_request = InvalidRequestObject()
 
         if filters is None:

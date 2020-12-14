@@ -19,7 +19,7 @@ rooms = [room]
 
 @mock.patch("rentomatic.use_cases.room_list_use_case.RoomListUseCase")
 def test_get(mock_use_case, client):
-    mock_use_case().execute.return_value = rooms
+    mock_use_case().execute.return_value = res.ResponseSuccess(rooms)
     http_response = client.get("/rooms")
 
     assert json.loads(http_response.data.decode("UTF-8")) == [room_dict]

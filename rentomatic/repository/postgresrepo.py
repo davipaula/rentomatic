@@ -1,3 +1,5 @@
+from typing import Dict, List, Tuple
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -6,13 +8,14 @@ from rentomatic.repository.postgres_objects import Base, Room
 
 
 class PostgresRepo:
-    def __init__(self, connection_data):
+    def __init__(self, connection_data: Dict) -> None:
         connection_string = f"postgresql+psycopg2://{connection_data['user']}:{connection_data['password']}@{connection_data['host']}/{connection_data['dbname']}"
 
         self.engine = create_engine(connection_string)
         Base.metadata.bind = self.engine
 
-    def _create_room_objects(self, results):
+    @staticmethod
+    def _create_room_objects(results: List) -> List[room.Room]:
         return [
             room.Room(
                 code=result.code,
@@ -24,7 +27,7 @@ class PostgresRepo:
             for result in results
         ]
 
-    def list(self, filters=None):
+    def list(self, filters: Dict = None) -> List[room.Room]:
         DBSession = sessionmaker(bind=self.engine)
         session = DBSession()
 
@@ -48,8 +51,7 @@ class PostgresRepo:
         return rooms
 
     @staticmethod
-    def get_field_and_condition(filter_):
+    def get_field_and_condition(filter_: str) -> Tuple[str, str]:
         field, condition = filter_.split("__")
 
         return field, f"__{condition}__"
-

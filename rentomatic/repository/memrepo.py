@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 from rentomatic.domain import room as r
 
@@ -28,7 +28,7 @@ class MemRepo:
         return [r.Room.from_dict(room) for room in room_dicts]
 
     @staticmethod
-    def get_field_and_condition(filter_):
+    def get_field_and_condition(filter_: str) -> Tuple[str, str]:
         field, condition = filter_.split("__")
 
         return field, f"__{condition}__"

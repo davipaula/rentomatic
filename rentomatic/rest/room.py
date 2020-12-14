@@ -18,7 +18,7 @@ connection_data = {
 
 
 @blueprint.route("/rooms", methods=["GET"])
-def room():
+def room() -> Response:
     request_filters = request.args
 
     filters = dict()
@@ -34,7 +34,6 @@ def room():
     use_case = uc.RoomListUseCase(repo)
 
     result = use_case.execute(room_list_request)
-    print(result.value)
 
     return Response(
         json.dumps(result.value, cls=ser.RoomJsonEncoder),

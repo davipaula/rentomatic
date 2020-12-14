@@ -10,13 +10,6 @@ def test_build_room_list_request_object_without_parameters():
     assert bool(request) is True
 
 
-def test_build_room_list_request_object_from_empty_dict():
-    request = req.RoomListRequestObject.from_dict({})
-
-    assert request.filters is None
-    assert bool(request) is True
-
-
 def test_build_room_list_with_empty_filters():
     request = req.RoomListRequestObject(filters={})
 

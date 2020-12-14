@@ -1,5 +1,8 @@
+from typing import Dict
+
+
 class Room:
-    def __init__(self, code, size: int, price: int, longitude: float, latitude: float):
+    def __init__(self, code, size: int, price: int, longitude: float, latitude: float) -> None:
         self.code = code
         self.size = size
         self.price = price
@@ -7,7 +10,7 @@ class Room:
         self.latitude = latitude
 
     @classmethod
-    def from_dict(cls, dictionary):
+    def from_dict(cls, dictionary: Dict):
         return Room(
             code=dictionary["code"],
             size=dictionary["size"],
@@ -16,7 +19,7 @@ class Room:
             latitude=dictionary["latitude"],
         )
 
-    def to_dict(self):
+    def to_dict(self) -> Dict:
         return {
             "code": self.code,
             "size": self.size,
@@ -25,5 +28,5 @@ class Room:
             "latitude": self.latitude,
         }
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.to_dict() == other.to_dict()
