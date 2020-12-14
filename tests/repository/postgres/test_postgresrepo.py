@@ -1,5 +1,3 @@
-import pytest
-from rentomatic.repository.postgres_objects import Room
 from rentomatic.repository import postgresrepo
 
 
